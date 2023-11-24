@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: emp1-postgres
+    volumes:
+      - postgres_db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: Emp1
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5433:5432"
+
+  emp1-app:
+    build:
+      context: .
+    image: emp1-spring-app
+    depends_on:
+      - postgres
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/Emp1
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+
+#  pgadmin:
+#    container_name: pgadmin4
+#    image: dpage/pgadmin4
+#    restart: unless-stopped
+#    ports:
+#      - "80:80"
+#    environment:
+#      - PGADMIN_DEFAULT_EMAIL= admin4@admin.admin
+#      - PGADMIN_DEFAULT_PASSWORD= admin
+#    hostname: pgadmin
+volumes:
+  postgres_db:
+#    volumes:
+#      - postgres_db:/var/lib/postgresql/data
+#  pgadmin:
+#    image: dpage/pgadmin4
+#    depends_on:
+#      - postgres
+#    ports:
+#      - "5555:80"
+#    environment:
+#      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+#      PGADMIN_DEFAULT_PASSWORD: admin
+#    restart: unless-stopped
+
